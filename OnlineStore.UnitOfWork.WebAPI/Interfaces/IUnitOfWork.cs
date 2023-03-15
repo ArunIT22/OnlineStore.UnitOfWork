@@ -2,7 +2,7 @@
 
 namespace OnlineStore.UnitOfWork.WebAPI.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         IProductRepository ProductRepository { get; }
 

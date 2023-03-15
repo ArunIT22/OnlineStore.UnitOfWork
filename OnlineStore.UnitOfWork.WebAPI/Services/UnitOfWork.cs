@@ -21,5 +21,10 @@ namespace OnlineStore.UnitOfWork.WebAPI.Services
         {
             await _context.SaveChangesAsync();
         }
+
+        public void Dispose()
+        {
+            _context.Dispose();
+        }
     }
 }
