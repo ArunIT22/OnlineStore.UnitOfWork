@@ -89,9 +89,22 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
             var product = await _unitOfWork.ProductRepository.GetProductsByCategory(id);
             if (product.Any())
             {
-                return NotFound();
+                return Ok(product);
             }
-            return Ok(product);
+            return NotFound();
+        }
+
+        [HttpGet("CategoryList")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Category))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetCategories()
+        {
+            var categories = await _unitOfWork.ProductRepository.GetCategories();
+            if (categories.Any())
+            {
+                return Ok(categories);
+            }
+            return NotFound();
         }
 
         [HttpPost]

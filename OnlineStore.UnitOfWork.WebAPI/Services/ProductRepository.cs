@@ -63,5 +63,11 @@ namespace OnlineStore.UnitOfWork.WebAPI.Services
             var product = await _context.Set<Product>().Include(x => x.Category).SingleOrDefaultAsync(x => x.Id == id);
             return product;
         }
+
+        public async Task<IEnumerable<Category>> GetCategories()
+        {
+            var categories = await _context.Categories.ToListAsync();
+            return categories;
+        }
     }
 }

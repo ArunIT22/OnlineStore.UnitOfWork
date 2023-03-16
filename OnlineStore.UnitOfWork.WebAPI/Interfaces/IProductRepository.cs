@@ -4,6 +4,8 @@ namespace OnlineStore.UnitOfWork.WebAPI.Interfaces
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
-        Task<IEnumerable<Product>> GetProductsByCategory(int categoryId);   
+        Task<IEnumerable<Product>> GetProductsByCategory(int categoryId);
+
+        Task<IEnumerable<Category>> GetCategories();
     }
 }
