@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OnlineStore.UnitOfWork.WebAPI.DTO;
 using OnlineStore.UnitOfWork.WebAPI.Interfaces;
 using OnlineStore.UnitOfWork.WebAPI.Models;
 using System.Net;
@@ -11,10 +13,12 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
     public class ProductsController : ControllerBase, IDisposable
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ProductsController(IUnitOfWork unitOfWork)
+        public ProductsController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public void Dispose()
@@ -27,7 +31,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Product))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductDto))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> GetAll()
         {
@@ -36,11 +40,23 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
             {
                 return Problem("No Product found");
             }
-            return Ok(products);
+
+            //var productDto = products.Select(x => new ProductDto
+            //{
+            //    Product_Name = x.ProductName,
+            //    CategoryName = x.Category.CategoryName,
+            //    SellingPrice = x.SellingPrice,
+            //    ListPrice = x.ListPrice,
+            //    Discount = x.Discount,
+            //}).ToList();
+
+            var productDto = _mapper.Map<List<ProductDto>>(products);
+
+            return Ok(productDto);
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Product))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
         public async Task<IActionResult> GetById(int id)
@@ -54,7 +70,17 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
             {
                 return NotFound($"No Product found for the id : {id}");
             }
-            return Ok(product);
+
+            //ProductDto productDto = new();
+            //productDto.Product_Name = product.ProductName;
+            //productDto.ListPrice = product.ListPrice;
+            //productDto.Discount = product.Discount;
+            //productDto.SellingPrice = product.SellingPrice;
+            //productDto.CategoryName = product.Category.CategoryName;
+
+            var productDto = _mapper.Map<ProductDto>(product);
+
+            return Ok(productDto);
         }
 
         [HttpGet("/ProductByCategory/{id}")]
@@ -69,17 +95,25 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddProduct(Product product)
+        public async Task<IActionResult> AddProduct(AddOrUpdateProductDto productDto)
         {
-            if (product == null)
+            if (productDto == null)
             {
-                return BadRequest(product);
+                return BadRequest(productDto);
             }
             if (!ModelState.IsValid)
             {
                 return ValidationProblem("Please enter the valid product details");
             }
-
+            //Product product = new()
+            //{
+            //    ProductName = productDto.Product_Name,
+            //    ListPrice = productDto.ListPrice,
+            //    SellingPrice = productDto.SellingPrice,
+            //    Discount = productDto.Discount,
+            //    CategoryId = productDto.CategoryId,
+            //};
+            var product = _mapper.Map<Product>(productDto);
             await _unitOfWork.ProductRepository.AddNewAsync(product);
             await _unitOfWork.SaveAsync();
 
@@ -91,16 +125,17 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(Product))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
-        public async Task<IActionResult> UpdateProduct(Product product)
+        public async Task<IActionResult> UpdateProduct(AddOrUpdateProductDto productDto)
         {
-            if (product == null)
+            if (productDto == null)
             {
-                return BadRequest(product);
+                return BadRequest(productDto);
             }
             if (!ModelState.IsValid)
             {
                 return ValidationProblem("Please enter the valid product details");
             }
+            var product = _mapper.Map<Product>(productDto);
             var result = await _unitOfWork.ProductRepository.UpdateAsync(product);
             if (result)
             {

@@ -18,6 +18,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServe
 //Configure IUnitOfWork
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+//Configure AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -51,5 +51,17 @@ namespace OnlineStore.UnitOfWork.WebAPI.Services
         {
             return await _context.Set<Product>().Include(x => x.Category).Where(x => x.CategoryId == categoryId).ToListAsync();
         }
+
+        public override async Task<IEnumerable<Product>> GetAllAsync()
+        {
+            var products = await _context.Set<Product>().Include(c => c.Category).ToListAsync();
+            return products;
+        }
+
+        public override async Task<Product> GetAsync(int id)
+        {
+            var product = await _context.Set<Product>().Include(x => x.Category).SingleOrDefaultAsync(x => x.Id == id);
+            return product;
+        }
     }
 }

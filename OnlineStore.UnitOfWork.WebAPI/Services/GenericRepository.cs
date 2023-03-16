@@ -26,12 +26,13 @@ namespace OnlineStore.UnitOfWork.WebAPI.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _context.Set<T>().ToListAsync();
+            throw new NotImplementedException();
+            // return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetAsync(int id)
+        public virtual async Task<T> GetAsync(int id)
         {
             return await _context.Set<T>().FindAsync(id);
         }       
