@@ -4,12 +4,14 @@ namespace OnlineStore.UnitOfWork.WebAPI.Models
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> option):base(option)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> option) : base(option)
         {
         }
 
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
+
+        public virtual DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,32 +28,41 @@ namespace OnlineStore.UnitOfWork.WebAPI.Models
 
                 //Add Data to Product Table
                 x.HasData(
-                    new Product { Id = 1, ProductName = "Sony Television", ListPrice =55000.50M, SellingPrice=51000, Discount=5, AddedDate=DateTime.Now, CategoryId=1},
-                    new Product { Id = 2, ProductName = "LG Television", ListPrice =45000.50M, SellingPrice=41000, Discount=5, AddedDate=DateTime.Now.AddDays(-2), CategoryId=1},
-                    new Product { Id = 3, ProductName = "iPhone14", ListPrice =85000.50M, SellingPrice=80000, Discount=5, AddedDate=DateTime.Now, CategoryId=2},
-                    new Product { Id = 4, ProductName = "Samsung M33", ListPrice =25000.50M, SellingPrice=22000, Discount=4, AddedDate=DateTime.Now, CategoryId=2},
-                    new Product { Id = 5, ProductName = "Levis Jeans", ListPrice =2599M, SellingPrice=2199, Discount=5, AddedDate=DateTime.Now, CategoryId=3},
-                    new Product { Id = 6, ProductName = "Shirt", ListPrice =950, SellingPrice=900, Discount=5, AddedDate=DateTime.Now, CategoryId=3},
-                    new Product { Id = 7, ProductName = "Ruskin Bonds", ListPrice =259, SellingPrice=209, Discount=10, AddedDate=DateTime.Now, CategoryId=4}
+                    new Product { Id = 1, ProductName = "Sony Television", ListPrice = 55000.50M, SellingPrice = 51000, Discount = 5, AddedDate = DateTime.Now, CategoryId = 1 },
+                    new Product { Id = 2, ProductName = "LG Television", ListPrice = 45000.50M, SellingPrice = 41000, Discount = 5, AddedDate = DateTime.Now.AddDays(-2), CategoryId = 1 },
+                    new Product { Id = 3, ProductName = "iPhone14", ListPrice = 85000.50M, SellingPrice = 80000, Discount = 5, AddedDate = DateTime.Now, CategoryId = 2 },
+                    new Product { Id = 4, ProductName = "Samsung M33", ListPrice = 25000.50M, SellingPrice = 22000, Discount = 4, AddedDate = DateTime.Now, CategoryId = 2 },
+                    new Product { Id = 5, ProductName = "Levis Jeans", ListPrice = 2599M, SellingPrice = 2199, Discount = 5, AddedDate = DateTime.Now, CategoryId = 3 },
+                    new Product { Id = 6, ProductName = "Shirt", ListPrice = 950, SellingPrice = 900, Discount = 5, AddedDate = DateTime.Now, CategoryId = 3 },
+                    new Product { Id = 7, ProductName = "Ruskin Bonds", ListPrice = 259, SellingPrice = 209, Discount = 10, AddedDate = DateTime.Now, CategoryId = 4 }
                     );
             });
 
             modelBuilder.Entity<Category>(x =>
             {
-                x.Property(e=>e.CategoryName)
+                x.Property(e => e.CategoryName)
                 .HasMaxLength(100)
                 .IsUnicode(false);
 
                 //Add Rows to Category Table
                 x.HasData(
-                    new Category { Id=1, CategoryName="HomeApplicances"},
-                    new Category { Id=2, CategoryName="Mobiles"},
-                    new Category { Id=3, CategoryName="Clothing"},
-                    new Category { Id=4, CategoryName="Books"}
+                    new Category { Id = 1, CategoryName = "HomeApplicances" },
+                    new Category { Id = 2, CategoryName = "Mobiles" },
+                    new Category { Id = 3, CategoryName = "Clothing" },
+                    new Category { Id = 4, CategoryName = "Books" }
                     );
             });
 
-
+            modelBuilder.Entity<User>(x =>
+            {
+                x.HasKey(x => x.Id);
+                x.Property(e => e.Id).HasDefaultValueSql("NewId()");
+                x.Property(e => e.Username).HasMaxLength(100).IsUnicode(false);
+                x.Property(e => e.FirstName).HasMaxLength(100).IsUnicode(false);
+                x.Property(e => e.LastName).HasMaxLength(100).IsUnicode(false);
+                x.Property(e => e.EmailId).HasMaxLength(250).IsUnicode(false);
+                x.Property(e => e.RoleName).HasMaxLength(100).IsUnicode(false);
+            });
         }
     }
 }

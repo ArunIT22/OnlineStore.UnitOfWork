@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using OnlineStore.UnitOfWork.WebAPI.Interfaces;
 using OnlineStore.UnitOfWork.WebAPI.Models;
 using OnlineStore.UnitOfWork.WebAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +28,18 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //Configure AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+//Configure JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(config =>
+config.TokenValidationParameters = new TokenValidationParameters
+{
+    ValidateIssuer = true,
+    ValidateAudience = false,
+    ValidateLifetime = true,
+    ValidateIssuerSigningKey = true,
+    ValidIssuer = builder.Configuration["JWT:issuer"],
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,6 +52,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("MyAPIPolicy");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

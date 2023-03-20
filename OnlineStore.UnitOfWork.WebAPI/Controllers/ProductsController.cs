@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineStore.UnitOfWork.WebAPI.DTO;
@@ -8,6 +9,7 @@ using System.Net;
 
 namespace OnlineStore.UnitOfWork.WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase, IDisposable

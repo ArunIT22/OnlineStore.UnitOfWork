@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineStore.UnitOfWork.WebAPI.Models;
 
@@ -11,9 +12,10 @@ using OnlineStore.UnitOfWork.WebAPI.Models;
 namespace OnlineStore.UnitOfWork.WebAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230320035641_CreateTableUser")]
+    partial class CreateTableUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,7 +108,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Migrations
                         new
                         {
                             Id = 1,
-                            AddedDate = new DateTime(2023, 3, 20, 9, 29, 5, 160, DateTimeKind.Local).AddTicks(607),
+                            AddedDate = new DateTime(2023, 3, 20, 9, 26, 41, 614, DateTimeKind.Local).AddTicks(3046),
                             CategoryId = 1,
                             Discount = 5f,
                             ListPrice = 55000.50m,
@@ -116,7 +118,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Migrations
                         new
                         {
                             Id = 2,
-                            AddedDate = new DateTime(2023, 3, 18, 9, 29, 5, 160, DateTimeKind.Local).AddTicks(609),
+                            AddedDate = new DateTime(2023, 3, 18, 9, 26, 41, 614, DateTimeKind.Local).AddTicks(3048),
                             CategoryId = 1,
                             Discount = 5f,
                             ListPrice = 45000.50m,
@@ -126,7 +128,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Migrations
                         new
                         {
                             Id = 3,
-                            AddedDate = new DateTime(2023, 3, 20, 9, 29, 5, 160, DateTimeKind.Local).AddTicks(627),
+                            AddedDate = new DateTime(2023, 3, 20, 9, 26, 41, 614, DateTimeKind.Local).AddTicks(3068),
                             CategoryId = 2,
                             Discount = 5f,
                             ListPrice = 85000.50m,
@@ -136,7 +138,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Migrations
                         new
                         {
                             Id = 4,
-                            AddedDate = new DateTime(2023, 3, 20, 9, 29, 5, 160, DateTimeKind.Local).AddTicks(628),
+                            AddedDate = new DateTime(2023, 3, 20, 9, 26, 41, 614, DateTimeKind.Local).AddTicks(3070),
                             CategoryId = 2,
                             Discount = 4f,
                             ListPrice = 25000.50m,
@@ -146,7 +148,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Migrations
                         new
                         {
                             Id = 5,
-                            AddedDate = new DateTime(2023, 3, 20, 9, 29, 5, 160, DateTimeKind.Local).AddTicks(630),
+                            AddedDate = new DateTime(2023, 3, 20, 9, 26, 41, 614, DateTimeKind.Local).AddTicks(3071),
                             CategoryId = 3,
                             Discount = 5f,
                             ListPrice = 2599m,
@@ -156,7 +158,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Migrations
                         new
                         {
                             Id = 6,
-                            AddedDate = new DateTime(2023, 3, 20, 9, 29, 5, 160, DateTimeKind.Local).AddTicks(631),
+                            AddedDate = new DateTime(2023, 3, 20, 9, 26, 41, 614, DateTimeKind.Local).AddTicks(3072),
                             CategoryId = 3,
                             Discount = 5f,
                             ListPrice = 950m,
@@ -166,7 +168,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Migrations
                         new
                         {
                             Id = 7,
-                            AddedDate = new DateTime(2023, 3, 20, 9, 29, 5, 160, DateTimeKind.Local).AddTicks(632),
+                            AddedDate = new DateTime(2023, 3, 20, 9, 26, 41, 614, DateTimeKind.Local).AddTicks(3073),
                             CategoryId = 4,
                             Discount = 10f,
                             ListPrice = 259m,
@@ -198,6 +200,10 @@ namespace OnlineStore.UnitOfWork.WebAPI.Migrations
                         .HasMaxLength(100)
                         .IsUnicode(false)
                         .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
