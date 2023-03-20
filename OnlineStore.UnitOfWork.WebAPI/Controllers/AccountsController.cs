@@ -111,6 +111,6 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
                 var computedHash = hmca.ComputeHash(Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(passwordHash);
             }
-        }
+        }        
     }
 }
