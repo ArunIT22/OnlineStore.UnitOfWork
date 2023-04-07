@@ -12,7 +12,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.DTO
         public string FirstName { get; set; } = null!;
         public string? LastName { get; set; }
         public string EmailId { get; set; } = null!;
-        public string RoleName { get; set; } = null!;
+        public string RoleName { get; set; } = "customer";
     }
 
     public class LoginDto

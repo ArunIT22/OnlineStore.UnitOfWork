@@ -25,6 +25,8 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
         }
 
         [HttpPost("Register")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RegisterDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ValidationProblemDetails))]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
             if (registerDto == null)
@@ -32,7 +34,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
                 return BadRequest();
             }
             var (salt, hash) = CreatePasswordHash(registerDto.Password);
-            User userData = new User
+            User userData = new()
             {
                 Username = registerDto.Username,
                 FirstName = registerDto.FirstName,
@@ -51,7 +53,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginDto login)
         {
-            var currentUser = _context.Users.SingleOrDefault(x => x.Username == login.Username);
+            var currentUser = _context.Users.FirstOrDefault(x => x.Username == login.Username);
             if (currentUser == null)
             {
                 return BadRequest("Invalid Username");
@@ -66,7 +68,13 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
             {
                 return BadRequest("Invalid Credentials");
             }
-            return Ok(token);
+            // return Ok(token);
+            return Ok(new
+            {
+                Token = token,
+                ExpiresIn = DateTime.Now.AddDays(1),
+                Username = login.Username
+            });
         }
 
         [NonAction]
@@ -75,20 +83,22 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
 
-            var myClaims = new List<Claim>()
+            var myClaims = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Email,user.EmailId),
                 new Claim(ClaimTypes.Role, user.RoleName),
                 new Claim(ClaimTypes.GivenName, user.FirstName)
+            });
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = myClaims,
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = credentials,
             };
 
-            var token = new JwtSecurityToken(issuer: _configuration["JWT:issuer"],
-                                             //audience: _configuration["JWT:issuer"],
-                                             claims: myClaims,
-                                             expires: DateTime.Now.AddDays(1),
-                                             signingCredentials: credentials
-                                             );
+            var token = new JwtSecurityTokenHandler().CreateToken(tokenDescriptor);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
@@ -111,6 +121,6 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
                 var computedHash = hmca.ComputeHash(Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(passwordHash);
             }
-        }        
+        }
     }
 }

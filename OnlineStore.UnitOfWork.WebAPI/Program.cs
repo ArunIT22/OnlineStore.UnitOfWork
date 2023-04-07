@@ -61,15 +61,20 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(config =>
-config.TokenValidationParameters = new TokenValidationParameters
 {
-    ValidateIssuer = true,
-    ValidateAudience = false,
-    ValidateLifetime = true,
-    ValidateIssuerSigningKey = true,
-    ValidIssuer = builder.Configuration["JWT:issuer"],
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
-});
+    config.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JWT:issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
+    };
+    config.SaveToken = true;
+    config.RequireHttpsMetadata=true;
+}
+) ;
 
 var app = builder.Build();
 

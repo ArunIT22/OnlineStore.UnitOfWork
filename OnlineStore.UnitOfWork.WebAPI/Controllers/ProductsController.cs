@@ -32,6 +32,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductDto))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
@@ -57,6 +58,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
             return Ok(productDto);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -85,6 +87,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
             return Ok(productDto);
         }
 
+        
         [HttpGet("/ProductByCategory/{id}")]
         public async Task<IActionResult> GetProductByCategory(int id)
         {
@@ -96,6 +99,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
             return NotFound();
         }
 
+        [AllowAnonymous]
         [HttpGet("CategoryList")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Category))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -160,7 +164,7 @@ namespace OnlineStore.UnitOfWork.WebAPI.Controllers
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             if (id <= 0)
